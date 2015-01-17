@@ -199,8 +199,8 @@ void AlignmentPicture::mouseMoveEvent(QMouseEvent *event)
             row *= 1.0 * _cRows/MAX_SCREEN_HEIGHT;
         }
     } else {
-        col = int(x/_nW) + 1;
-        row = int(y/_nH);
+        col = x/_nW + 1;
+        row = y/_nH;
     }
     QString strToolTip;
     if(event->y() < 50) {
@@ -364,10 +364,9 @@ void AlignmentPicture::rescale(int x, int y) {
         _x = x - cX*scaleX;
         _y = y - cY*scaleY - _coveragePlotHeight;
     } else {
-        _x = x -cX*_nW;
-        _y = y- cY*_nH - _coveragePlotHeight;
+        _x = x - cX*_nW;
+        _y = y - cY*_nH - _coveragePlotHeight;
     }
-
 
     update();
 
@@ -397,7 +396,7 @@ void AlignmentPicture::loadSequences() {
         readInfo.readgroup = QString::fromStdString((*itReads)->getGroup());
 
         // record the coverage per position
-        for(int i = readInfo.start; i < readInfo.end; i ++) {
+        for(int i = (readInfo.start >= 0) ? readInfo.start : 0; i < readInfo.end && i < _coverage.size(); i++) {
             _coverage[i]++;
         }
         readInfo.sequence = qsequence;
@@ -533,7 +532,7 @@ void AlignmentPicture::drawRegion(int x, int y, int width, int height)
     }
 
     _pict = new QPixmap(width, height);
-    _pict->fill(Qt::white);
+    _pict->fill(Qt::white); // white background
 
     painter.begin(_pict);
 
@@ -546,27 +545,33 @@ void AlignmentPicture::drawRegion(int x, int y, int width, int height)
         endRead = _readInfo.size();
     }
 
-    int yPos = 0;
+    int startPos = -x/_nW;
 
+    if(startPos < 0) {
+        startPos = 0;
+    }
+
+    int xOffset = -x%_nW;
+    int yOffset = -y%_nH;
+
+    int yPos = 0;
     for(int iRead = startRead; iRead < endRead; iRead++) {
         QString qsequence = _readInfo[iRead].sequence;
         QStringList seqList = qsequence.split("", QString::SkipEmptyParts);
 
-        int startPos = -x/_nW;
-        if(startPos < 0) {
-            startPos = 0;
-        }
         int endPos = width/_nW + startPos;
         if(endPos >= seqList.size()) {
             endPos = seqList.size();
         }
+
         int xPos = 0;
         for (int iSeq = startPos; iSeq < endPos; iSeq++) {
             if(seqList[iSeq] != " ") {
                 if(nucMap.contains(seqList[iSeq])) {
-                    painter.drawPixmap(xPos*_nW, yPos*_nH,nucMap[seqList[iSeq]]);
+                    painter.drawPixmap(xPos*_nW - xOffset, yPos*_nH - yOffset,nucMap[seqList[iSeq]]);
                 } else {
-                    painter.drawText(xPos*_nW, yPos*_nH + _nH * 0.8,seqList[iSeq]);
+                    //not one of the standard nucleotides
+                    painter.drawText(xPos*_nW - xOffset, yPos*_nH + _nH * 0.8 - yOffset,seqList[iSeq]);
                 }
             }
             xPos++;
@@ -574,14 +579,13 @@ void AlignmentPicture::drawRegion(int x, int y, int width, int height)
         yPos++;
     }
 
-    int startPos = -x/_nW;
     int endPos = width/_nW + startPos;
     vector<Variation*> variations = _pContig->getVariations();
     for(vector<Variation*>::iterator itVar = variations.begin(); itVar != variations.end(); itVar++) {
         int pos = (*itVar)->getPos();
         if((*itVar)->isReliable() && pos >= startPos && pos <= endPos) {
             painter.setPen(Qt::black);
-            QRect varRect((pos - startPos)*_nW, 0, _nW, _cRows * _nH);
+            QRect varRect((pos - startPos)*_nW - xOffset, 0, _nW, _cRows * _nH - yOffset);
             painter.setBrush(QColor(0, 0, 0, 75));
             painter.drawRect(varRect);
         }
@@ -634,7 +638,7 @@ void AlignmentPicture::scrollToPosition(int pos)
 
     _y = 0;
     if(_bPixelMode) {
-        _x = -(pos - width() / 2);
+        _x = -(pos - width() / 2)*_zoomX*_charWidth;
         _y = -iRow*_zoomY*_charWidth;
     } else {
         _x = -(pos*_nW - width() / 2);

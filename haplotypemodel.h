@@ -29,7 +29,6 @@ private:
     int                     _cRow;
     int                     _cColumn;
     QMap<QString, QColor>   _colorMap;
-    QFont                   _font;
     QList<int>              _positions;
     QList<int>              _flanks;
     QList<QString>          _haploTypeIDs;

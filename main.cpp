@@ -39,18 +39,18 @@ void usage(char* programName) {
     cout << "   -lq5                    the number of nucleotides at the 5' end of each read that should be marked as low quality (default: 0)" << endl;
     cout << "   -lq3                    the number of nucleotides at the 3' end of each read that should be marked as low quality (default: 0)" << endl;
     cout << "   -lq3p                   the fraction (0-1) of nucleotides from the 3' end of each read that should be marked as low quality (default: 0)" << endl;
-    cout << "   -minReads               minimal number of reads required for a valid allele (default: 2)" << endl;
-    cout << "   -minReadsp              minimal number of reads required for a valid allele, as a fraction (0-1) (default: 0.0)" << endl;
+    cout << "   -minReads               minimal number of reads required for a valid allele (default: 4)" << endl;
+    cout << "   -minReadsp              minimal number of reads required for a valid allele, as a fraction (0-1) (default: 0.2)" << endl;
     cout << "   -lqWeight               weight of the low quality nucleotides (default 0.5)" << endl;
     cout << "   -minQualScore           minimal contig quality score for high confidence (default: 20)" << endl;
     cout << "   -minMapQuality          minimal mapping quality score (default: 0)" << endl;
-    cout << "   -minConf                minimal score for high confidence (default: 2)" << endl;
+    cout << "   -minConf                minimal score for high confidence (default: 5)" << endl;
     cout << "   -simPol                 minimal similarity score per polymorphic site (default: 0.75)" << endl;
     cout << "   -simAll                 minimal similarity score over all polymorphic sites (default: 0.8)" << endl;
-    cout << "   -minHQReads             minimal number of high quality reads for a SNP to be of high confidence" << endl;
+    cout << "   -minHQReads             minimal number of high quality reads for a SNP to be of high confidence (default: 2)" << endl;
     cout << "   -reliableMarkers        only use reliable SNPs for markers, not the high confidence ones (T/F, default: F)" << endl;
-    cout << "   -maxSNPsFlank           maximal number of SNPs allowed in flanking regions for marker SNPs" << endl;
-    cout << "   -useIUPACCodes          return the reference sequence with IUPAC codes for the variations" << endl;
+    cout << "   -maxSNPsFlank           maximal number of SNPs allowed in flanking regions for marker SNPs (default: 0)" << endl;
+    cout << "   -useIUPACCodes          return the reference sequence with IUPAC codes for the variations (default: F)" << endl;
     cout << "   -indelLQ                mark indels SNPs as low quality (T/F, default: T)" << endl;
     cout << "   -printAlignment         print an alignment of the contig and reads (T/F, default: F)" << endl;
     cout << "   -printHaploTypes        print the different haplotypes (T/F, default: F)" << endl;
@@ -145,11 +145,14 @@ int main(int argc, char* argv[]) {
     }
 
     if (pConfig->getString("configurationFile") != "")  {
-        pConfig->readFile(pConfig->getString("configurationFile"), QDir::currentPath().toStdString());
+        QString configFile = QString::fromStdString(pConfig->getString("configurationFile"));
+        QFileInfo configFileInfo(configFile);
+        pConfig->readFile(configFileInfo.baseName().toStdString(), configFileInfo.absolutePath().toStdString());
         parseOpt(argc, argv);
     }
 
     QApplication a(argc, argv, !pConfig->getBool("servermode"));
+    a.setFont(QFont("Consolas", 18, QFont::Normal));
 
     if(pConfig->getBool("servermode")) {
         if(pConfig->getString("contigFileName").empty()) {

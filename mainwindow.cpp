@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _haplotypeDock  = NULL;
     _readGroupDock  = NULL;
 
-            resize(900,600);
+    resize(900,600);
     createMenuBar();
 
     createContigListDock();
@@ -84,11 +84,12 @@ void MainWindow::showContigDetails(QModelIndex clickedIndex)
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(Qt::WaitCursor);
 #endif
-    _haplotypeDock->setWindowTitle(qcontigName + " - haplotypes");      
+    _haplotypeDock->setFont(QFont("Consolas", 14, QFont::Normal));
+    _haplotypeDock->setWindowTitle(qcontigName + " - haplotypes");
+    _readGroupDock->setFont(QFont("Consolas", 14, QFont::Normal));
     _readGroupDock->setWindowTitle(qcontigName + " - groups");
+    _alignmentDock->setFont(QFont("Consolas", 14, QFont::Normal));
     _alignmentDock->setWindowTitle(qcontigName + " - reads");
-
-
     _alignmentPicture = new AlignmentPicture(pContig, this);
     _alignmentDock->setWidget(_alignmentPicture);
     _alignmentPicture->zoomToFit();
@@ -158,6 +159,7 @@ void MainWindow::openFileDialog()
 
 void MainWindow::createContigListDock()
 {
+    QWidget::setFont(QFont("Consolas", 14, QFont::Normal));
     QDockWidget*  contigDock = new QDockWidget(tr("Contigs"), this);
     contigDock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
     contigDock->setAllowedAreas(Qt::LeftDockWidgetArea);
@@ -168,9 +170,12 @@ void MainWindow::createContigListDock()
 
     QGridLayout *gridLayout = new QGridLayout;
     QLabel* hapLabel = new QLabel(tr("Haplotypes"));
+    hapLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     hapLabel->setToolTip(tr("max haplotypes per SNP"));
     QLabel* readLabel = new QLabel(tr("Reads"));
+    readLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     QLabel* SNPLabel = new QLabel(tr("SNPs"));
+    SNPLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     _hapMinLineEdit = new QSpinBox();
     _hapMaxLineEdit = new QSpinBox();
     _readMinLineEdit = new QSpinBox();
@@ -179,13 +184,17 @@ void MainWindow::createContigListDock()
     _SNPMaxLineEdit = new QSpinBox();
 
     _contigCountLabel = new QLabel(tr("0"));
+    _contigCountLabel->setFont(QFont("Consolas", 14, QFont::Normal));
 
     QLabel* contigSearchLabel = new QLabel(tr("Contig name:"));
     _ContigSearchLineEdit = new QLineEdit();
 
     QLabel* filterLabel = new QLabel(tr("Filter"));
+    filterLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     QLabel* minLabel = new QLabel(tr("Min #"));
+    minLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     QLabel* maxLabel = new QLabel(tr("Max #"));
+    maxLabel->setFont(QFont("Consolas", 14, QFont::Normal));
     gridLayout->addWidget(filterLabel, 0, 0);
     gridLayout->addWidget(minLabel, 0, 1);
     gridLayout->addWidget(maxLabel, 0, 2);
@@ -369,7 +378,7 @@ void MainWindow::exportMarkers()
     QList<QString>::iterator itNames;
     for(itNames = contigNames.begin(); itNames != contigNames.end(); itNames++) {
         string contigName = (*itNames).toStdString();
-        Contig* pContig = _reader.getContig(contigName);
+        Contig* pContig = _reader.getContig(contigName, true);
         rgContigs.push_back(pContig);
     }
 

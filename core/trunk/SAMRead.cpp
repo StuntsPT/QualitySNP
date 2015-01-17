@@ -65,6 +65,7 @@ bool SAMRead::processOperations() {
 			return false;
 		}
 		_sequence = _sequence.substr(_ops.front().size);
+        _quality = _quality.substr(_ops.front().size);
 		_ops.pop_front();
 	}
 	if(_ops.back().op == 'S') {
@@ -75,6 +76,7 @@ bool SAMRead::processOperations() {
 		}
 
 		_sequence.resize(newSize);
+        _quality.resize(newSize);
 		_ops.pop_back();
 	}
 
@@ -134,24 +136,27 @@ char SAMRead::getOperationAt(unsigned int pos) {
 }
 
 bool SAMRead::insertGapAt(unsigned int pos) {
+    char chGap = '*';
+
 	pos--;
 	if(_startPosition >= 0 && pos < static_cast<unsigned int>(_startPosition)) {
 		_startPosition++;
         return true;
 	}
 
-	char chGap = '*';
-
 	pos -= _startPosition;
-	if (pos < _sequence.size() && _opsequence[pos] != 'I') {
+    if(pos >= _sequence.size()) {
+        // position is after the end;
+        return false;
+    }
+
+    if (_opsequence[pos] != 'I') {
 		_sequence.insert(pos, 1, chGap);
 		_opsequence.insert(pos, 1, 'I');
 		_quality.insert(pos, 1, '~'); // ~ is the highest quality score
-        return true;
     }
 
-    // position is after the end;
-    return false;
+    return true;
 }
 
 void SAMRead::merge(SAMRead* pRead) {

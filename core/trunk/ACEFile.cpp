@@ -103,9 +103,6 @@ Contig* ACEFile::nextContig() {
 	//char line[MAX_LINE_LENGTH];
 	string line;
 
-	string contig_sequence;
-	string read_sequence;
-
 	Contig* pContig = _pContig;
 	SeqRead* pRead = NULL;
 	_pContig = NULL;
@@ -125,7 +122,7 @@ Contig* ACEFile::nextContig() {
 			return NULL;
 		}
 
-		if (line[0] == 'C' && line[1] == 'O' && line[2] <= ' ') {
+        if (!emptyLine(line) && line[0] == 'C' && line[1] == 'O' && line[2] <= ' ') {
 			pContig = parseContigLine(line);
 		}
 	}

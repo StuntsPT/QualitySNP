@@ -169,7 +169,7 @@ string SeqRead::toCSV() {
 	csv << _name << sep;
 	csv << hapid << sep;
 	csv << _parent->getName() << sep;
-    csv << _startPosition << sep;
+    csv << (_startPosition + 1) << sep; // _startPosition is zero based
     csv << group << sep;
     csv << _sequence << NEWLINE;
 	return csv.str();

@@ -12,7 +12,7 @@ Install QtCreator
 Load QualitySNPng.pro with QtCreator, if requested select the Desktop target
 Build project
 To package, run:
-macdeployqtc QualitySNPng.app -dmg
+macdeployqt QualitySNPng.app -dmg
 
 ==========================================
 Build for Linux:

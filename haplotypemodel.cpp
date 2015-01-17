@@ -8,7 +8,7 @@ bool haploTypeSortFunction(HaploType* pHap1, HaploType* pHap2) {
 }
 
 HaploTypeModel::HaploTypeModel(Contig* pContig, QObject *parent) :
-    QAbstractTableModel(parent), _cRow(0), _cColumn(0), _font(QFont("Courier", 10, QFont::Bold))
+    QAbstractTableModel(parent), _cRow(0), _cColumn(0)
 {
     list<HaploType*> haploTypes = pContig->getHaploTypes();
     haploTypes.sort(haploTypeSortFunction);
@@ -70,8 +70,6 @@ QVariant HaploTypeModel::data(const QModelIndex &index, int role) const
         return _colorMap.value(_rowList[index.row()][index.column()], Qt::white);
     } else if ( role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
-    } else if ( role == Qt::FontRole) {
-        return _font;
     } else
         return QVariant();
 }
@@ -85,8 +83,6 @@ QVariant HaploTypeModel::headerData(int section, Qt::Orientation orientation, in
              QString hapID = _haploTypeIDs[section];
              return QString("HaploType %1 (%2 reads)").arg( hapID).arg(_readCounts[hapID]);
          }
-    } else if ( role == Qt::FontRole) {
-        return _font;
     } else if ( role == Qt::ToolTipRole && orientation == Qt::Horizontal) {
         return QString("%1").arg(_flanks[section]);
     }else {

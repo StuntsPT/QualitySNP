@@ -69,19 +69,29 @@ bool SAMFile::isValid() {
 
 	int cLines = 0;
 	string line;
-	bool foundAt = false;
+    bool bSAM = false;
 
-	// scan 100 lines to find a line starting with @ indicating a header line
-	while(cLines < 100 && getline(_ifSAMFile,line) && !foundAt) {
-		if (!emptyLine(line) && line[0] == '@') {
-            foundAt = true;
+    // scan 100 lines to find a line starting with @ indicating a header line
+    // or a line that can be parsed
+    while(cLines < 100 && getline(_ifSAMFile,line) && !bSAM) {
+        if (!emptyLine(line)) {
+            if (line[0] == '@') {
+                bSAM = true;
+            } else {
+                SAMRead* pRead = parseReadLine(line, true);
+                if (pRead != NULL) {
+                    bSAM = true;
+                    delete pRead;
+                }
+            }
 		}
-		cLines++;
+
+        cLines++;
 	}
 
     _ifSAMFile.clear();	
     _ifSAMFile.seekg (0, ios::beg);
-    return foundAt;
+    return bSAM;
 }
 
 // return the next contig in the SAM file, or NULL if there are no more contigs

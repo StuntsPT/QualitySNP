@@ -47,8 +47,6 @@ private:
     int                  _cRow;
     int                  _cColumn;
     QList<QString>       _headers;
-    QFont                _font;
-    
 };
 
 #endif // CONTIGLISTMODEL_H

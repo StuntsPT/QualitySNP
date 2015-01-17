@@ -38,9 +38,9 @@ Configuration::Configuration(void)
 {
     _name = "default";
 
-    intMap["minimalNumberOfReadsPerAllele"]		= 2;
-    doubleMap["minimalNumberOfReadsPerAllelep"] = 0.1;
-    intMap["minimalNumberOfReadsPerHaploType"]	= 2;
+    intMap["minimalNumberOfReadsPerAllele"]		= 4;
+    doubleMap["minimalNumberOfReadsPerAllelep"] = 0.2;
+    intMap["minimalNumberOfReadsPerHaploType"]	= 4;
     intMap["lowQualityRegion5prime"]			= 0;
     intMap["lowQualityRegion3prime"]			= 0;
     intMap["maxNumberOfSNPsInFlanks"]			= 0;

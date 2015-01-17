@@ -109,6 +109,7 @@ void RunDialog::on_runButton_clicked()
     connect(_pRun, SIGNAL(done()), pThread, SLOT(quit()));
     connect(_pRun, SIGNAL(done()), this, SLOT(runDone()));
     connect(_pRun, SIGNAL(printMessage(QString)), this, SLOT(printMessage(QString)));
+    connect(_pRun, SIGNAL(reportError(QString)), this, SLOT(showError(QString)));
 
     pThread->start();
     printMessage(tr("Started"));
@@ -145,6 +146,12 @@ void RunDialog::showError(QString message)
     messageBox.setText(message);
     messageBox.exec();
     ui->runButton->setEnabled(true);
+    ui->stopButton->setEnabled(false);
+    ui->browseButton->setEnabled(true);
+    ui->editButton->setEnabled(true);
+    ui->outputDirButton->setEnabled(true);
+    ui->configurationComboBox->setEnabled(true);
+    ui->stopButton->setText("Stop");
     ui->logText->clear();
 }
 

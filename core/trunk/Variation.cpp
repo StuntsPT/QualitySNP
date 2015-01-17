@@ -57,6 +57,12 @@ bool Variation::setNucCount(int* nucCount) {
 
 	int nDifferentNucs = Configuration::getConfig()->getNumberOfNucs();
 
+    // find the major and minor alleles
+    // allele 0 is the major allele until an allele with higher nucleotide count is found
+    _majorAllele = 0;
+    _minorAllele = -1;
+    _cAlleles = (_nucCount[_majorAllele] > 0) ? 1 : 0;
+
 	for(int iNuc = 1; iNuc < nDifferentNucs; iNuc++) {
 		if(_nucCount[iNuc] > 0) { 
 			_cAlleles++;
@@ -73,7 +79,7 @@ bool Variation::setNucCount(int* nucCount) {
 
 	if (_minorAllele == -1) {
 		// this should not happen!!
-		cerr << "only one allele in this variation, not good..." << endl;
+        Logger::getLogger()->log(QSNP_ERROR, "only one allele in this variation");
 		return false;
 	}
 
@@ -124,6 +130,11 @@ int Variation::getConfidenceScore() {
 		}
 
         _bHighConfidence = _confidenceScore >= pConfig->getInt("minimalConfidenceScore");
+
+        if(!_bHighConfidence) {
+            _bReliable = false;
+            _bDefining = false;
+        }
 	}
 
     return _confidenceScore;
@@ -312,7 +323,7 @@ const string Variation::toCSV() {
     char sep = pConfig->getChar("fieldSeparator");
 	stringstream csv;
 	csv << _pContig->getName() << sep;
-	csv << _pos << sep;
+    csv << (_pos + 1) << sep; // position in variation is zero-based
 	csv << pConfig->int2nuc(_majorAllele) << sep;
 	csv << pConfig->int2nuc(_minorAllele) << sep;
 	csv << isHighConfidence() << sep;

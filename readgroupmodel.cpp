@@ -17,7 +17,7 @@ int compareRows(QStringList l1, QStringList l2) {
 }
 
 ReadGroupModel::ReadGroupModel(Contig* pContig, QObject *parent) :
-    QAbstractTableModel(parent), _font(QFont("Courier", 10, QFont::Bold))
+    QAbstractTableModel(parent)
 {
     list<HaploType*> haploTypes = pContig->getHaploTypes();
     vector<Variation*> variations = pContig->getVariations();
@@ -142,8 +142,6 @@ QVariant ReadGroupModel::data(const QModelIndex &index, int role) const
         return _colorMap.value(_rowList[index.row()][index.column()], Qt::white);
     } else if ( role == Qt::TextAlignmentRole) {
         return Qt::AlignCenter;
-    } else if ( role == Qt::FontRole) {
-        return _font;
     } else
         return QVariant();
 }
@@ -156,8 +154,6 @@ QVariant ReadGroupModel::headerData(int section, Qt::Orientation orientation, in
          } else {
              return QString("%1 (%2 reads)").arg(_rowLabels[section]).arg(_readCounts[section]);
          }
-    } else if ( role == Qt::FontRole) {
-        return _font;
     } else if ( role == Qt::ToolTipRole && orientation == Qt::Vertical) {
         return _rowLabelTooltips[section];
     }else {

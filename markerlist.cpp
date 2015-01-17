@@ -70,12 +70,17 @@ void MarkerList::on_previewButton_clicked()
                 int iSeq = pos - 1;
                 int iFlank = flankLength - 1;
                 string lFlank(flankLength,' ');
-                while(iFlank >= 0) {
+
+                bool bSuccess = true;
+                while(iFlank >= 0 && bSuccess) {
                     if(sequence[iSeq] != '*') {
                         lFlank[iFlank] = sequence.at(iSeq);
                         iFlank--;
                     }
                     iSeq--;
+                    if(iSeq < 0) {
+                         bSuccess = false;
+                    }
                 }
 
                 ss << lFlank;
@@ -84,25 +89,30 @@ void MarkerList::on_previewButton_clicked()
                 iSeq = pos + 1;
                 iFlank = 0;
                 string rFlank(flankLength,' ');
-                while(iFlank < flankLength) {
+                while(iFlank < flankLength && bSuccess) {
                     if(sequence[iSeq] != '*') {
                         rFlank[iFlank] = sequence.at(iSeq);
                         iFlank++;
                     }
                     iSeq++;
+                    if(iSeq >= sequence.length()) {
+                        bSuccess = false;
+                    }
                 }
                 ss << rFlank;
 
-                int new_row = ui->markerListTableWidget->rowCount();
-                ui->markerListTableWidget->insertRow(new_row);
-                QTableWidgetItem* contigNameItem = new QTableWidgetItem(QString::fromStdString(contigName));
-                QTableWidgetItem* positionItem = new QTableWidgetItem(QString(tr("%1").arg(pos)));
-                QTableWidgetItem* sequenceItem = new QTableWidgetItem(QString::fromStdString(ss.str()));
-                sequenceItem->setFont(QFont("Courier"));
+                if(bSuccess) {
+                    int new_row = ui->markerListTableWidget->rowCount();
+                    ui->markerListTableWidget->insertRow(new_row);
+                    QTableWidgetItem* contigNameItem = new QTableWidgetItem(QString::fromStdString(contigName));
+                    QTableWidgetItem* positionItem = new QTableWidgetItem(QString(tr("%1").arg(pos + 1)));
+                    QTableWidgetItem* sequenceItem = new QTableWidgetItem(QString::fromStdString(ss.str()));
+                    sequenceItem->setFont(QFont("Courier"));
 
-                ui->markerListTableWidget->setItem(new_row, 0, contigNameItem);
-                ui->markerListTableWidget->setItem(new_row, 1, positionItem);
-                ui->markerListTableWidget->setItem(new_row, 2, sequenceItem);
+                    ui->markerListTableWidget->setItem(new_row, 0, contigNameItem);
+                    ui->markerListTableWidget->setItem(new_row, 1, positionItem);
+                    ui->markerListTableWidget->setItem(new_row, 2, sequenceItem);
+                }
             }
         }
     }

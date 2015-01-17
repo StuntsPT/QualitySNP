@@ -9,7 +9,7 @@ CSVReader::CSVReader()
 {
 }
 
-Contig* CSVReader::getContig(string contigName) {
+Contig* CSVReader::getContig(string contigName, bool bOnlyVariations) {
     ifstream	ifContigFile;
 
     Configuration* pConfig = Configuration::getConfig();
@@ -37,10 +37,14 @@ Contig* CSVReader::getContig(string contigName) {
             pContig = new Contig(name);
             pContig->setSequence(sequence);
 
-            map<int, vector<SeqRead*> > hapmap;
-            getReads(pContig, hapmap);
-            getVariations(pContig);
-            getHaploTypes(pContig, hapmap);
+            if(bOnlyVariations) {
+                getVariations(pContig);
+            } else {
+                map<int, vector<SeqRead*> > hapmap;
+                getReads(pContig, hapmap);
+                getVariations(pContig);
+                getHaploTypes(pContig, hapmap);
+            }
         }
     }
 
@@ -118,7 +122,7 @@ void CSVReader::getReads(Contig* pContig, map<int, vector<SeqRead*> >& hapmap) {
             bFound = true;
             SeqRead* pRead = new SeqRead(name, pContig);
             pRead->setSequence(sequence);
-            pRead->setStartPosition(start + 1);
+            pRead->setStartPosition(start); // method will decrease by one to make zero based
 
             if(group != "-") {
                 pRead->setGroup(group);
@@ -267,7 +271,7 @@ void CSVReader::getVariations(Contig* pContig) {
 
         if(contigName == pContig->getName()) {
             bFound = true;
-            Variation* pVariation = new Variation(pContig, position);
+            Variation* pVariation = new Variation(pContig, position - 1); // position is zero based
             pVariation->setMajorAllele(majAllele);
             pVariation->setMinorAllele(minAllele);
             pVariation->setIsDefining(defining);

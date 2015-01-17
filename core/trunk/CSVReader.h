@@ -22,7 +22,7 @@ class CSVReader
 public:
     CSVReader();
 
-    Contig* getContig(string contigName);
+    Contig *getContig(string contigName, bool bOnlyVariations = false);
     const vector<ContigInfo> getContigList();
     void getVariations(Contig* pContig);
 

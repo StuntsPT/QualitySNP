@@ -1,7 +1,7 @@
 #include "contiglistmodel.h"
 
 ContigListModel::ContigListModel(vector<ContigInfo>& contigInfoList, QObject *parent) :
-    QAbstractTableModel(parent), _contigInfoList(contigInfoList), _font(QFont("Courier", 10, QFont::Bold))
+    QAbstractTableModel(parent), _contigInfoList(contigInfoList)
 {
     _cColumn = 5;
     _cRow = 0;
@@ -65,9 +65,6 @@ QVariant ContigListModel::data(const QModelIndex &index, int role) const
         default:
             return QVariant();
         }
-
-    } else if ( role == Qt::FontRole) {
-        return _font;
     } else
         return QVariant();
 }
@@ -78,8 +75,6 @@ QVariant ContigListModel::headerData(int section, Qt::Orientation orientation, i
          if (orientation == Qt::Horizontal){
              return _headers[section];
          }
-    } else if ( role == Qt::FontRole) {
-        return _font;
     }
 
     return QVariant();

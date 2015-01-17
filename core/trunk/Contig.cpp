@@ -527,8 +527,10 @@ int Contig::findMarkerSNPs() {
 
 			while(bFlankGood) {
 				++flankLength;
-				bFlankGood = varPos - flankLength > leftBorder && varPos + flankLength < rightBorder && 
-					isHighQuality(varPos + flankLength) && isHighQuality(varPos - flankLength);
+                int leftPos = varPos - flankLength;
+                int rightPos = varPos + flankLength;
+                bFlankGood = leftPos > leftBorder && rightPos < rightBorder &&
+                    isHighQuality(rightPos) && isHighQuality(leftPos);
 			}
 
 			cMarkerSNP++;
@@ -704,7 +706,7 @@ string Contig::readGroups2CSV(vector<string> readGroupNames) {
 
             int nPos = (*itVars)->getPos();
             csv << getName() << sep;
-            csv << nPos;
+            csv << (nPos + 1); // zero based
 
             vector<string>::iterator itRG;
 

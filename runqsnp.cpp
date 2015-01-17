@@ -73,7 +73,8 @@ void RunQSNP::run()
 
     ContigProvider contigProvider;
     if (!contigProvider.init()) {
-        emit reportError("Could read contig file");
+        emit reportError("Could not read contig file");
+        emit done();
         return;
     }
 

@@ -5,9 +5,16 @@
 #-------------------------------------------------
 
 QT       += core gui
-
 TARGET = QualitySNPng
 TEMPLATE = app
+
+CONFIG += static
+
+static {
+    CONFIG += static
+    DEFINES += STATIC
+    message("Static build.")
+}
 
 
 SOURCES += main.cpp\
@@ -68,3 +75,4 @@ FORMS    += \
     rundialog.ui \
     markerlist.ui \
     settingsdialog.ui
+
