@@ -12,29 +12,33 @@ Due to this a GPL license was added to the repository.
 
 ##Build instructions:
 
-Build for Windows:
-Install Microsoft Visual C++
-Start Visual Studio Command prompt
-Go to the directory with the source
-Run:
-$QTDIR/qmake -o Makefile QualitySNPng.pro
-nmake
+####Windows
+
+* Install Microsoft Visual C++
+* Start Visual Studio Command prompt
+* Go to the directory with the source
+* Run:
+  * $QTDIR/qmake -o Makefile QualitySNPng.pro
+  * nmake
 
 ---
 
-Build for OS X:
-Install QtCreator
-Load QualitySNPng.pro with QtCreator, if requested select the Desktop target
-Build project
-To package, run:
-macdeployqt QualitySNPng.app -dmg
+####OS X
+
+* Install QtCreator
+* Load QualitySNPng.pro with QtCreator, if requested select the Desktop target
+* Build project
+* To package, run:
+  * macdeployqt QualitySNPng.app -dmg
 
 ---
 
-Build for Linux:
-Install QtCreator
-Load QualitySNPng.pro with QtCreator, if requested select the Desktop target
-Build project
+####Linux
+
+* Install QtCreator
+* Load QualitySNPng.pro with QtCreator, if requested select the Desktop target
+* Build project
+
 
 ##Citation
 
